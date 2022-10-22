@@ -1,11 +1,11 @@
-'''
+"""
 @File    :   yolov5.py
 @Version :   1.0
 @Author  :   laugh12321
 @Contact :   laugh12321@vip.qq.com
 @Date    :   2022/10/21 14:58:39
 @Desc    :   将DAIR-V2X数据集转换为YOLOV5格式
-'''
+"""
 
 import argparse
 import json
@@ -26,50 +26,58 @@ class Loader:
         """
         self.data_dir = data_dir
         self.__categories = self.__get_categories()
-        self.__data_info_path = os.path.join(data_dir, "data_info.json")  # 数据信息
-        self.__train_data_info, self.__val_data_info = self.__get_train_val_info(train_split)
+        self.__data_info_path = os.path.join(data_dir,
+                                             "data_info.json")  # 数据信息
+        self.__train_data_info, self.__val_data_info = self.__get_train_val_info(
+            train_split)
 
     @property
     def train_info(self) -> dict:
-        """训练数据信息
-        """
+        """训练数据信息"""
         return self.__train_data_info
 
     @property
     def val_info(self) -> dict:
-        """验证数据信息
-        """
+        """验证数据信息"""
         return self.__val_data_info
 
     @property
     def categories(self) -> dict:
-        """类别与id对应关系
-        """
+        """类别与id对应关系"""
         return self.__categories
 
     @staticmethod
     def __get_categories() -> dict:
-        """获取类别与id对应关系
-        """
+        """获取类别与id对应关系"""
         __categories = [
-            "car", "truck", "van", "bus", "pedestrian", "cyclist", "tricyclist", "motorcyclist",
-            "barrowlist", "trafficcone", "pedestrianignore", "carignore", "otherignore",
-            "unknown_movable", "unknown_unmovable"
+            "car",
+            "truck",
+            "van",
+            "bus",
+            "pedestrian",
+            "cyclist",
+            "tricyclist",
+            "motorcyclist",
+            "barrowlist",
+            "trafficcone",
+            "pedestrianignore",
+            "carignore",
+            "otherignore",
+            "unknown_movable",
+            "unknown_unmovable",
         ]
 
         return {_category: _id for _id, _category in enumerate(__categories)}
 
     def __get_train_val_info(self, train_split) -> Tuple[dict, dict]:
-        """分割训练集和验证集
-        """
+        """分割训练集和验证集"""
         __data_info = json.loads(open(self.__data_info_path).read())
         train_num = int(len(__data_info) * train_split)
         return __data_info[:train_num], __data_info[train_num:]
 
 
 class DAIR2COCO(Loader):
-    """DAIR-V2X数据集转换为coco格式
-    """
+    """DAIR-V2X数据集转换为coco格式"""
 
     def __init__(self, data_dir: str, train_split: float = 0.85) -> None:
         super(DAIR2COCO, self).__init__(data_dir, train_split)
@@ -77,8 +85,7 @@ class DAIR2COCO(Loader):
 
     @staticmethod
     def __get_annotations(annos_dir: str) -> dict:
-        """获取标注信息
-        """
+        """获取标注信息"""
         return json.loads(open(annos_dir).read())
 
     @staticmethod
@@ -92,10 +99,14 @@ class DAIR2COCO(Loader):
             list: yolov5的bbox
         """
         return [
-            ((float(bbox["xmin"]) + float(bbox["xmax"])) / 2) / float(image["width"]),
-            ((float(bbox["ymin"]) + float(bbox["ymax"])) / 2) / float(image["height"]),
-            (float(bbox["xmax"]) - float(bbox["xmin"])) / float(image["width"]),
-            (float(bbox["ymax"]) - float(bbox["ymin"])) / float(image["height"])
+            ((float(bbox["xmin"]) + float(bbox["xmax"])) / 2) /
+            float(image["width"]),
+            ((float(bbox["ymin"]) + float(bbox["ymax"])) / 2) /
+            float(image["height"]),
+            (float(bbox["xmax"]) - float(bbox["xmin"])) /
+            float(image["width"]),
+            (float(bbox["ymax"]) - float(bbox["ymin"])) /
+            float(image["height"]),
         ]
 
     def format2coco(self, data_info: dict, save_path: str) -> None:
@@ -109,10 +120,16 @@ class DAIR2COCO(Loader):
         for data in tqdm(data_info):
             file_name = data["image_path"]
             img_id, _ = os.path.splitext(os.path.basename(file_name))
-            annos_dir = os.path.join(self.data_dir, data["label_camera_std_path"])
+            annos_dir = os.path.join(self.data_dir,
+                                     data["label_camera_std_path"])
             annos = self.__get_annotations(annos_dir)
 
-            image_msg = {"file_name": file_name, "height": 1080, "width": 1920, "id": img_id}
+            image_msg = {
+                "file_name": file_name,
+                "height": 1080,
+                "width": 1920,
+                "id": img_id,
+            }
 
             with open(os.path.join(save_path, f"{img_id}.txt"), "w") as file:
                 for i, item in enumerate(annos, start=1):
@@ -123,26 +140,25 @@ class DAIR2COCO(Loader):
                     if i == len(annos):
                         file.write(line)
                     else:
-                        file.write(line + '\n')
+                        file.write(line + "\n")
 
     def processing(self) -> None:
-        """处理进程
-        """
+        """处理进程"""
         os.makedirs(self.save_dir, exist_ok=True)
         # 创建进程
         train_process = Process(
             target=self.format2coco,
             kwargs={
                 "data_info": self.train_info,
-                "save_path": os.path.join(self.save_dir, "train")
-            }
+                "save_path": os.path.join(self.save_dir, "train"),
+            },
         )
         val_process = Process(
             target=self.format2coco,
             kwargs={
                 "data_info": self.val_info,
-                "save_path": os.path.join(self.save_dir, "val")
-            }
+                "save_path": os.path.join(self.save_dir, "val"),
+            },
         )
         # 启动进程
         train_process.start()
@@ -150,11 +166,12 @@ class DAIR2COCO(Loader):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="DAIR-V2X dataset to YOLOv5 format.")
-    parser.add_argument('--data_dir', type=str, help='数据位置')
+    parser = argparse.ArgumentParser(
+        description="DAIR-V2X dataset to YOLOv5 format.")
+    parser.add_argument("--data_dir", type=str, help="数据位置")
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parse_args()
     DAIR2COCO(args.data_dir).processing()
