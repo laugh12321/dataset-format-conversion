@@ -1,5 +1,5 @@
 '''
-@File    :   tt100k2coco.py
+@File    :   coco.py
 @Version :   1.0
 @Author  :   laugh12321
 @Contact :   laugh12321@vip.qq.com

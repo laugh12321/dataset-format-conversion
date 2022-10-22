@@ -1,5 +1,5 @@
 '''
-@File    :   2yolov5.py
+@File    :   yolov5.py
 @Version :   1.0
 @Author  :   laugh12321
 @Contact :   laugh12321@vip.qq.com
