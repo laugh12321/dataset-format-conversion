@@ -89,7 +89,8 @@ class TT100k2COCO(Loader):
         super(TT100k2COCO, self).__init__(data_dir)
         self.save_dir = os.path.join(data_dir, "annotations")
 
-    def __bbox2xywh(self, bbox: dict) -> list:
+    @staticmethod
+    def __bbox2xywh(bbox: dict) -> list:
         """将TT-100K中的bbox[xmin, ymin, xmax, ymax], 转为coco的bbox[xmin, ymin, width, height]
 
         Args:
