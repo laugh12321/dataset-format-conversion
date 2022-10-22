@@ -4,7 +4,7 @@
 @Author  :   laugh12321
 @Contact :   laugh12321@vip.qq.com
 @Date    :   2022/09/01 18:08:09
-@Desc    :   None
+@Desc    :   将TT-100K数据集转换为coco格式
 '''
 
 import argparse
@@ -33,54 +33,36 @@ class Loader:
 
     @property
     def categories(self) -> dict:
-        """获取类别与id对应关系
-
-        Returns:
-            dict: category与category_id对应关系
+        """类别与id对应关系
         """
         return self.__categories
 
     @property
     def annotations(self) -> dict:
-        """获取合并后的标注信息 (2021 + 2016)
-
-        Returns:
-            dict: 合并后的标注信息
+        """合并后的标注信息 (2021 + 2016)
         """
         return self.__annos
 
     @property
     def train_ids(self) -> list:
-        """获取训练集图片id
-
-        Returns:
-            list: 训练集图片id
+        """训练集图片id
         """
         return self.__train_ids
 
     @property
     def val_ids(self) -> list:
-        """获取验证集图片id
-
-        Returns:
-            list: 验证集图片id
+        """验证集图片id
         """
         return self.__val_ids
 
     @property
     def test_ids(self) -> list:
         """获取测试集图片id
-
-        Returns:
-            list: 测试集图片id
         """
         return self.__test_ids
 
     def __get_annotations(self) -> Tuple[dict, dict]:
         """获取合并后的类别信息与标注信息
-
-        Returns:
-            Tuple[dict, dict]: _description_
         """
         __annos16 = json.loads(open(self.__annos16_dir).read())
         __annos21 = json.loads(open(self.__annos21_dir).read())
@@ -92,9 +74,6 @@ class Loader:
 
     def __get_ids(self) -> Tuple[list, list, list]:
         """获取图片id
-
-        Returns:
-            Tuple[list, list, list]: 训练集图片id, 验证集图片id, 测试集图片id
         """
         __train_path = os.path.join(self.__data_dir, "train/ids.txt")
         __val_path = os.path.join(self.__data_dir, "test/ids.txt")
@@ -202,7 +181,7 @@ class TT100k2COCO(Loader):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="TT100k dataset to coco")
+    parser = argparse.ArgumentParser(description="TT-100K dataset to COCO format.")
     parser.add_argument('--data_dir', type=str, help='数据位置')
     return parser.parse_args()
 
