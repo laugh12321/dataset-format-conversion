@@ -147,7 +147,7 @@ class DAIR2COCO(Loader):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="DAIR-V2X dataset to coco")
+    parser = argparse.ArgumentParser(description="DAIR-V2X dataset to YOLOv5 format.")
     parser.add_argument('--data_dir', type=str, help='数据位置')
     return parser.parse_args()
 
