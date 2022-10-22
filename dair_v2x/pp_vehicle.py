@@ -52,7 +52,8 @@ class Loader:
         """机动车类别"""
         return self.__vhicles
 
-    def __get_categories(self) -> dict:
+    @staticmethod
+    def __get_categories() -> dict:
         """获取类别与id对应关系"""
         __categories = [
             "vehicle",
@@ -85,11 +86,13 @@ class DAIR2COCO(Loader):
         super(DAIR2COCO, self).__init__(data_dir, train_split)
         self.save_dir = os.path.join(data_dir, "pp-vehicle-annotations")
 
-    def __get_annotations(self, annos_dir: str) -> dict:
+    @staticmethod
+    def __get_annotations(annos_dir: str) -> dict:
         """获取标注信息"""
         return json.loads(open(annos_dir).read())
 
-    def __bbox2xywh(self, bbox: dict) -> list:
+    @staticmethod
+    def __bbox2xywh(bbox: dict) -> list:
         """将DAIR-V2X中的bbox[xmin, ymin, xmax, ymax], 转为coco的bbox[xmin, ymin, width, height]
 
         Args:

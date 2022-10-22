@@ -46,7 +46,8 @@ class Loader:
         """类别与id对应关系"""
         return self.__categories
 
-    def __get_categories(self) -> dict:
+    @staticmethod
+    def __get_categories() -> dict:
         """获取类别与id对应关系"""
         __categories = [
             "car",
@@ -82,11 +83,13 @@ class DAIR2COCO(Loader):
         super(DAIR2COCO, self).__init__(data_dir, train_split)
         self.save_dir = os.path.join(data_dir, "yolov5-labels")
 
-    def __get_annotations(self, annos_dir: str) -> dict:
+    @staticmethod
+    def __get_annotations(annos_dir: str) -> dict:
         """获取标注信息"""
         return json.loads(open(annos_dir).read())
 
-    def __bbox2xywh(self, bbox: dict, image: dict) -> list:
+    @staticmethod
+    def __bbox2xywh(bbox: dict, image: dict) -> list:
         """将DAIR-V2X中的bbox[xmin, ymin, xmax, ymax], 转为yolov5的bbox[x_center, y_center, width, height]
 
         Args:
