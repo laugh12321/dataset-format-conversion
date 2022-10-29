@@ -63,7 +63,7 @@ class Loader:
         ]
 
         return {_category: _id
-                for _id, _category in enumerate(__categories)}, ["car", "truck", "van", "bus"]
+                for _id, _category in enumerate(__categories, start=1)}, ["car", "truck", "van", "bus"]
 
     def __get_train_val_info(self, train_split) -> Tuple[dict, dict]:
         """分割训练集和验证集"""
