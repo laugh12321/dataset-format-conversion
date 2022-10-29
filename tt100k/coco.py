@@ -17,7 +17,6 @@ from tqdm import tqdm
 
 
 class Loader:
-
     def __init__(self, data_dir: str) -> None:
         """初始化
 
@@ -25,10 +24,10 @@ class Loader:
             data_dir (str): TT-100K 数据集根目录
         """
         self.__data_dir = data_dir
-        self.__annos16_dir = os.path.join(data_dir,
-                                          "annotations.json")  # 2016 版标注信息
-        self.__annos21_dir = os.path.join(data_dir,
-                                          "annotations_all.json")  # 2021 版标注信息
+        self.__annos16_dir = os.path.join(data_dir, "annotations.json")  # 2016 版标注信息
+        self.__annos21_dir = os.path.join(
+            data_dir, "annotations_all.json"
+        )  # 2021 版标注信息
 
         self.__categories, self.__annos = self.__get_annotations()
         self.__train_ids, self.__val_ids, self.__test_ids = self.__get_ids()
@@ -63,11 +62,11 @@ class Loader:
         __annos16 = json.loads(open(self.__annos16_dir).read())
         __annos21 = json.loads(open(self.__annos21_dir).read())
         __categories = sorted(
-            list(set(__annos16["types"] + __annos21["types"])))  # 类别信息合并并排序
+            list(set(__annos16["types"] + __annos21["types"]))
+        )  # 类别信息合并并排序
 
         return {
-            category: category_id
-            for category_id, category in enumerate(__categories)
+            category: category_id for category_id, category in enumerate(__categories)
         }, __annos16["imgs"] | __annos21["imgs"]
 
     def __get_ids(self) -> Tuple[list, list, list]:
@@ -84,7 +83,6 @@ class Loader:
 
 
 class TT100k2COCO(Loader):
-
     def __init__(self, data_dir: str) -> None:
         super(TT100k2COCO, self).__init__(data_dir)
         self.save_dir = os.path.join(data_dir, "annotations")
@@ -141,18 +139,14 @@ class TT100k2COCO(Loader):
                 coco_json["annotations"].append(annotation_dict)
                 if category not in coco_json["categories"]:
                     coco_json["categories"].append(category)
-        categories_list = [{
-            "id": self.categories[category],
-            "name": category
-        } for category in coco_json["categories"]]
+        categories_list = [
+            {"id": self.categories[category], "name": category}
+            for category in coco_json["categories"]
+        ]
 
         coco_json["categories"] = categories_list
         with open(json_path, "w+", encoding="utf-8") as file:
-            json.dump(coco_json,
-                      file,
-                      indent=4,
-                      sort_keys=False,
-                      ensure_ascii=False)
+            json.dump(coco_json, file, indent=4, sort_keys=False, ensure_ascii=False)
 
     def processing(self) -> None:
         """处理进程"""
@@ -186,8 +180,7 @@ class TT100k2COCO(Loader):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        description="TT-100K dataset to COCO format.")
+    parser = argparse.ArgumentParser(description="TT-100K dataset to COCO format.")
     parser.add_argument("--data_dir", type=str, help="数据位置")
     return parser.parse_args()
 

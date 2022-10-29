@@ -17,7 +17,6 @@ from tqdm import tqdm
 
 
 class Loader:
-
     def __init__(self, data_dir: str, train_split: float = 0.85) -> None:
         """初始化
 
@@ -26,10 +25,10 @@ class Loader:
         """
         self.data_dir = data_dir
         self.__categories = self.__get_categories()
-        self.__data_info_path = os.path.join(data_dir,
-                                             "data_info.json")  # 数据信息
+        self.__data_info_path = os.path.join(data_dir, "data_info.json")  # 数据信息
         self.__train_data_info, self.__val_data_info = self.__get_train_val_info(
-            train_split)
+            train_split
+        )
 
     @property
     def train_info(self) -> dict:
@@ -99,14 +98,10 @@ class DAIR2COCO(Loader):
             list: yolov5的bbox
         """
         return [
-            ((float(bbox["xmin"]) + float(bbox["xmax"])) / 2) /
-            float(image["width"]),
-            ((float(bbox["ymin"]) + float(bbox["ymax"])) / 2) /
-            float(image["height"]),
-            (float(bbox["xmax"]) - float(bbox["xmin"])) /
-            float(image["width"]),
-            (float(bbox["ymax"]) - float(bbox["ymin"])) /
-            float(image["height"]),
+            ((float(bbox["xmin"]) + float(bbox["xmax"])) / 2) / float(image["width"]),
+            ((float(bbox["ymin"]) + float(bbox["ymax"])) / 2) / float(image["height"]),
+            (float(bbox["xmax"]) - float(bbox["xmin"])) / float(image["width"]),
+            (float(bbox["ymax"]) - float(bbox["ymin"])) / float(image["height"]),
         ]
 
     def format2coco(self, data_info: dict, save_path: str) -> None:
@@ -120,8 +115,7 @@ class DAIR2COCO(Loader):
         for data in tqdm(data_info):
             file_name = data["image_path"]
             img_id, _ = os.path.splitext(os.path.basename(file_name))
-            annos_dir = os.path.join(self.data_dir,
-                                     data["label_camera_std_path"])
+            annos_dir = os.path.join(self.data_dir, data["label_camera_std_path"])
             annos = self.__get_annotations(annos_dir)
 
             image_msg = {
@@ -166,8 +160,7 @@ class DAIR2COCO(Loader):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        description="DAIR-V2X dataset to YOLOv5 format.")
+    parser = argparse.ArgumentParser(description="DAIR-V2X dataset to YOLOv5 format.")
     parser.add_argument("--data_dir", type=str, help="数据位置")
     return parser.parse_args()
 

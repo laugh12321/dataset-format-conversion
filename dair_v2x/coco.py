@@ -17,7 +17,6 @@ from tqdm import tqdm
 
 
 class Loader:
-
     def __init__(self, data_dir: str, train_split: float = 0.85) -> None:
         """初始化
 
@@ -26,10 +25,10 @@ class Loader:
         """
         self.data_dir = data_dir
         self.__categories = self.__get_categories()
-        self.__data_info_path = os.path.join(data_dir,
-                                             "data_info.json")  # 数据信息
+        self.__data_info_path = os.path.join(data_dir, "data_info.json")  # 数据信息
         self.__train_data_info, self.__val_data_info = self.__get_train_val_info(
-            train_split)
+            train_split
+        )
 
     @property
     def train_info(self) -> dict:
@@ -118,8 +117,7 @@ class DAIR2COCO(Loader):
         for data in tqdm(data_info):
             file_name = data["image_path"]
             img_id, _ = os.path.splitext(os.path.basename(file_name))
-            annos_dir = os.path.join(self.data_dir,
-                                     data["label_camera_std_path"])
+            annos_dir = os.path.join(self.data_dir, data["label_camera_std_path"])
             annos = self.__get_annotations(annos_dir)
 
             image_dict = {
@@ -147,18 +145,14 @@ class DAIR2COCO(Loader):
                 coco_json["annotations"].append(annotation_dict)
                 if category not in coco_json["categories"]:
                     coco_json["categories"].append(category)
-        categories_list = [{
-            "id": self.categories[category],
-            "name": category
-        } for category in coco_json["categories"]]
+        categories_list = [
+            {"id": self.categories[category], "name": category}
+            for category in coco_json["categories"]
+        ]
 
         coco_json["categories"] = categories_list
         with open(json_path, "w+", encoding="utf-8") as file:
-            json.dump(coco_json,
-                      file,
-                      indent=4,
-                      sort_keys=False,
-                      ensure_ascii=False)
+            json.dump(coco_json, file, indent=4, sort_keys=False, ensure_ascii=False)
 
     def processing(self) -> None:
         """处理进程"""
@@ -184,8 +178,7 @@ class DAIR2COCO(Loader):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        description="DAIR-V2X dataset to COCO format.")
+    parser = argparse.ArgumentParser(description="DAIR-V2X dataset to COCO format.")
     parser.add_argument("--data_dir", type=str, help="数据位置")
     return parser.parse_args()
 
